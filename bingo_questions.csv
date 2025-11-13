@@ -1,0 +1,56 @@
+category,question,answer
+days,"¿Qué día es después de lunes?",martes
+days,"¿Qué día es antes de domingo?",sábado
+days,"¿Qué día es después de miércoles?",jueves
+days,"¿Qué día es el primer día de la semana?",lunes
+days,"¿Qué día es antes de martes?",lunes
+days,"¿Qué día es después de viernes?",sábado
+days,"¿Qué día es antes de jueves?",miércoles
+days,"¿Qué día es el último día de la semana?",domingo
+days,"¿Qué día es después de sábado?",domingo
+days,"¿Qué día es después de jueves?",viernes
+days,"¿Qué día es antes de sábado?",viernes
+days,"¿Qué día es después de domingo?",lunes
+days,"¿Qué día es antes de viernes?",jueves
+days,"¿Qué día es en el medio de la semana?",miércoles
+days,"¿Qué día es después de martes?",miércoles
+months,"¿Cuál es el primer mes del año?",enero
+months,"¿En qué mes celebramos la Navidad?",diciembre
+months,"¿Cuál es el segundo mes?",febrero
+months,"¿En qué mes es el verano? (julio o enero)",julio
+months,"¿Cuál es el último mes del año?",diciembre
+months,"¿En qué mes es Halloween?",octubre
+months,"¿Cuál es el tercer mes?",marzo
+months,"¿En qué mes empieza la primavera?",marzo
+months,"¿Cuál es el mes antes de julio?",junio
+months,"¿En qué mes es el Día de San Valentín?",febrero
+months,"¿Cuál es el mes después de agosto?",septiembre
+months,"¿Cuál es el sexto mes?",junio
+months,"¿En qué mes termina el año escolar?",junio
+months,"¿Cuál es el mes antes de diciembre?",noviembre
+months,"¿Cuál es el quinto mes?",mayo
+months,"¿En qué mes empieza el año escolar?",septiembre
+months,"¿Cuál es el mes después de marzo?",abril
+months,"¿En qué mes es el Día de Acción de Gracias?",noviembre
+months,"¿Cuál es el mes antes de mayo?",abril
+months,"¿Cuál es el octavo mes?",agosto
+time,"¿Qué hora es? [1:00]","la una"
+time,"¿Qué hora es? [2:00]","las dos"
+time,"¿Qué hora es? [3:00]","las tres"
+time,"¿Qué hora es? [4:00]","las cuatro"
+time,"¿Qué hora es? [5:00]","las cinco"
+time,"¿Qué hora es? [6:00]","las seis"
+time,"¿Qué hora es? [7:00]","las siete"
+time,"¿Qué hora es? [8:00]","las ocho"
+time,"¿Qué hora es? [9:00]","las nueve"
+time,"¿Qué hora es? [10:00]","las diez"
+time,"¿Qué hora es? [11:00]","las once"
+time,"¿Qué hora es? [12:00]","las doce"
+time,"¿Qué hora es? [1:30]","la una y media"
+time,"¿Qué hora es? [2:30]","las dos y media"
+time,"¿Qué hora es? [3:30]","las tres y media"
+time,"¿Qué hora es? [4:30]","las cuatro y media"
+time,"¿Qué hora es? [5:30]","las cinco y media"
+time,"¿Qué hora es? [6:15]","las seis y cuarto"
+time,"¿Qué hora es? [7:15]","las siete y cuarto"
+time,"¿Qué hora es? [8:45]","las nueve menos cuarto"
