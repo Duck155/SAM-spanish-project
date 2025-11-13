@@ -43,6 +43,11 @@
             color: #27ae60;
             font-weight: bold;
         }
+        .answer.hidden {
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            user-select: none;
+        }
         .answer-label {
             font-size: 24px;
             color: #7f8c8d;
@@ -64,6 +69,12 @@
         button:disabled {
             background-color: #95a5a6;
             cursor: not-allowed;
+        }
+        .reveal-btn {
+            background-color: #e67e22;
+        }
+        .reveal-btn:hover {
+            background-color: #d35400;
         }
         .counter {
             font-size: 20px;
@@ -96,10 +107,11 @@
             <div class="question-display">
                 <div class="question" id="question">Click "Next Question" to begin</div>
                 <div class="answer-label">Answer:</div>
-                <div class="answer" id="answer">---</div>
+                <div class="answer hidden" id="answer">---</div>
             </div>
             
             <button onclick="nextQuestion()">Next Question</button>
+            <button onclick="revealAnswer()" class="reveal-btn" id="revealBtn" disabled>Reveal Answer</button>
             <button onclick="previousQuestion()" id="prevBtn" disabled>Previous Question</button>
             
             <div class="counter">
@@ -209,11 +221,20 @@ time,"¿Qué hora es? [8:45]","las nueve menos cuarto"`;
 
         function displayQuestion() {
             const q = shuffledQuestions[currentIndex];
+            const answerEl = document.getElementById('answer');
+            
             document.getElementById('question').textContent = q.question;
-            document.getElementById('answer').textContent = q.answer;
+            answerEl.textContent = q.answer;
+            answerEl.classList.add('hidden');
             document.getElementById('currentNum').textContent = currentIndex + 1;
             
             document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('revealBtn').disabled = false;
+        }
+
+        function revealAnswer() {
+            document.getElementById('answer').classList.remove('hidden');
+            document.getElementById('revealBtn').disabled = true;
         }
     </script>
 </body>
