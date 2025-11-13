@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Bingo - Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .bingo-card {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .bingo-square {
+            background: white;
+            border: 2px solid #333;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .bingo-square:hover {
+            background-color: #e8e8e8;
+        }
+        .bingo-square.marked {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .bingo-square.free {
+            background-color: #FFD700;
+            font-weight: bold;
+            cursor: default;
+        }
+        .answer {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .action {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        .marked .action {
+            color: #fff;
+        }
+        .instructions {
+            max-width: 600px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mega Bingo - Player Card</h1>
+    
+    <div class="instructions">
+        <strong>How to play:</strong> When the host calls a question, find the answer on your card. Complete the action shown, then click the square to mark it. Get 5 in a row to win!
+    </div>
+
+    <div class="bingo-card" id="bingoCard"></div>
+
+    <script>
+        const actions = [
+            "5 jumping jacks",
+            "Touch the wall and return",
+            "Spin around 3 times",
+            "Do 3 squats",
+            "High-five 2 people",
+            "Touch your toes 5 times",
+            "Hop on one foot 5 times",
+            "Do arm circles for 5 seconds",
+            "March in place for 5 seconds",
+            "Strike a pose for 3 seconds"
+        ];
+
+        // Parse CSV data
+        const csvData = `category,question,answer
+days,"¿Qué día es después de lunes?",martes
+days,"¿Qué día es antes de domingo?",sábado
+days,"¿Qué día es después de miércoles?",jueves
+days,"¿Qué día es el primer día de la semana?",lunes
+days,"¿Qué día es antes de martes?",lunes
+days,"¿Qué día es después de viernes?",sábado
+days,"¿Qué día es antes de jueves?",miércoles
+days,"¿Qué día es el último día de la semana?",domingo
+days,"¿Qué día es después de sábado?",domingo
+days,"¿Qué día es después de jueves?",viernes
+days,"¿Qué día es antes de sábado?",viernes
+days,"¿Qué día es después de domingo?",lunes
+days,"¿Qué día es antes de viernes?",jueves
+days,"¿Qué día es en el medio de la semana?",miércoles
+days,"¿Qué día es después de martes?",miércoles
+months,"¿Cuál es el primer mes del año?",enero
+months,"¿En qué mes celebramos la Navidad?",diciembre
+months,"¿Cuál es el segundo mes?",febrero
+months,"¿En qué mes es el verano? (julio o enero)",julio
+months,"¿Cuál es el último mes del año?",diciembre
+months,"¿En qué mes es Halloween?",octubre
+months,"¿Cuál es el tercer mes?",marzo
+months,"¿En qué mes empieza la primavera?",marzo
+months,"¿Cuál es el mes antes de julio?",junio
+months,"¿En qué mes es el Día de San Valentín?",febrero
+months,"¿Cuál es el mes después de agosto?",septiembre
+months,"¿Cuál es el sexto mes?",junio
+months,"¿En qué mes termina el año escolar?",junio
+months,"¿Cuál es el mes antes de diciembre?",noviembre
+months,"¿Cuál es el quinto mes?",mayo
+months,"¿En qué mes empieza el año escolar?",septiembre
+months,"¿Cuál es el mes después de marzo?",abril
+months,"¿En qué mes es el Día de Acción de Gracias?",noviembre
+months,"¿Cuál es el mes antes de mayo?",abril
+months,"¿Cuál es el octavo mes?",agosto
+time,"¿Qué hora es? [1:00]","la una"
+time,"¿Qué hora es? [2:00]","las dos"
+time,"¿Qué hora es? [3:00]","las tres"
+time,"¿Qué hora es? [4:00]","las cuatro"
+time,"¿Qué hora es? [5:00]","las cinco"
+time,"¿Qué hora es? [6:00]","las seis"
+time,"¿Qué hora es? [7:00]","las siete"
+time,"¿Qué hora es? [8:00]","las ocho"
+time,"¿Qué hora es? [9:00]","las nueve"
+time,"¿Qué hora es? [10:00]","las diez"
+time,"¿Qué hora es? [11:00]","las once"
+time,"¿Qué hora es? [12:00]","las doce"
+time,"¿Qué hora es? [1:30]","la una y media"
+time,"¿Qué hora es? [2:30]","las dos y media"
+time,"¿Qué hora es? [3:30]","las tres y media"
+time,"¿Qué hora es? [4:30]","las cuatro y media"
+time,"¿Qué hora es? [5:30]","las cinco y media"
+time,"¿Qué hora es? [6:15]","las seis y cuarto"
+time,"¿Qué hora es? [7:15]","las siete y cuarto"
+time,"¿Qué hora es? [8:45]","las nueve menos cuarto"`;
+
+        // Extract unique answers
+        const lines = csvData.split('\n').slice(1); // Skip header
+        const answers = [...new Set(lines.map(line => {
+            const match = line.match(/,([^,]+)$/);
+            return match ? match[1].trim() : '';
+        }).filter(a => a))];
+
+        // Shuffle and pick 24 answers (25 - 1 for FREE space)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const selectedAnswers = shuffle([...answers]).slice(0, 24);
+
+        // Generate bingo card
+        const bingoCard = document.getElementById('bingoCard');
+        
+        for (let i = 0; i < 25; i++) {
+            const square = document.createElement('div');
+            square.className = 'bingo-square';
+            
+            if (i === 12) { // Middle square
+                square.classList.add('free', 'marked');
+                square.innerHTML = '<div class="answer">LIBRE</div>';
+            } else {
+                const answerIndex = i < 12 ? i : i - 1;
+                const answer = selectedAnswers[answerIndex];
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                
+                square.innerHTML = `
+                    <div class="answer">${answer}</div>
+                    <div class="action">${action}</div>
+                `;
+                
+                square.addEventListener('click', function() {
+                    if (!this.classList.contains('marked')) {
+                        if (confirm(`Complete action: ${action}\n\nDid you complete it?`)) {
+                            this.classList.add('marked');
+                            checkWin();
+                        }
+                    }
+                });
+            }
+            
+            bingoCard.appendChild(square);
+        }
+
+        function checkWin() {
+            const squares = document.querySelectorAll('.bingo-square');
+            const marked = Array.from(squares).map(s => s.classList.contains('marked'));
+            
+            // Check rows
+            for (let i = 0; i < 5; i++) {
+                if (marked.slice(i*5, i*5+5).every(m => m)) {
+                    declareWin();
+                    return;
+                }
+            }
+            
+            // Check columns
+            for (let i = 0; i < 5; i++) {
+                if ([0,1,2,3,4].every(j => marked[i + j*5])) {
+                    declareWin();
+                    return;
+                }
+            }
+            
+            // Check diagonals
+            if ([0,6,12,18,24].every(i => marked[i])) {
+                declareWin();
+                return;
+            }
+            if ([4,8,12,16,20].every(i => marked[i])) {
+                declareWin();
+                return;
+            }
+        }
+
+        function declareWin() {
+            alert('¡BINGO! You won! 🎉');
+        }
+    </script>
+</body>
+</html>
