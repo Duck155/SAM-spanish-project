@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Bingo - Host</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #2c3e50;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .question-display {
+            background: white;
+            color: #2c3e50;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .question {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .answer {
+            font-size: 36px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .answer-label {
+            font-size: 24px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        button {
+            font-size: 24px;
+            padding: 20px 40px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .counter {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #ecf0f1;
+        }
+        .start-screen {
+            text-align: center;
+        }
+        .start-screen button {
+            background-color: #27ae60;
+            font-size: 32px;
+            padding: 30px 60px;
+        }
+        .start-screen button:hover {
+            background-color: #229954;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mega Bingo - Host</h1>
+        
+        <div id="startScreen" class="start-screen">
+            <p style="font-size: 24px; margin-bottom: 40px;">Ready to start the game?</p>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+
+        <div id="gameScreen" style="display: none;">
+            <div class="question-display">
+                <div class="question" id="question">Click "Next Question" to begin</div>
+                <div class="answer-label">Answer:</div>
+                <div class="answer" id="answer">---</div>
+            </div>
+            
+            <button onclick="nextQuestion()">Next Question</button>
+            <button onclick="previousQuestion()" id="prevBtn" disabled>Previous Question</button>
+            
+            <div class="counter">
+                Question <span id="currentNum">0</span> of <span id="totalNum">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const csvData = `category,question,answer
+days,"¿Qué día es después de lunes?",martes
+days,"¿Qué día es antes de domingo?",sábado
+days,"¿Qué día es después de miércoles?",jueves
+days,"¿Qué día es el primer día de la semana?",lunes
+days,"¿Qué día es antes de martes?",lunes
+days,"¿Qué día es después de viernes?",sábado
+days,"¿Qué día es antes de jueves?",miércoles
+days,"¿Qué día es el último día de la semana?",domingo
+days,"¿Qué día es después de sábado?",domingo
+days,"¿Qué día es después de jueves?",viernes
+days,"¿Qué día es antes de sábado?",viernes
+days,"¿Qué día es después de domingo?",lunes
+days,"¿Qué día es antes de viernes?",jueves
+days,"¿Qué día es en el medio de la semana?",miércoles
+days,"¿Qué día es después de martes?",miércoles
+months,"¿Cuál es el primer mes del año?",enero
+months,"¿En qué mes celebramos la Navidad?",diciembre
+months,"¿Cuál es el segundo mes?",febrero
+months,"¿En qué mes es el verano? (julio o enero)",julio
+months,"¿Cuál es el último mes del año?",diciembre
+months,"¿En qué mes es Halloween?",octubre
+months,"¿Cuál es el tercer mes?",marzo
+months,"¿En qué mes empieza la primavera?",marzo
+months,"¿Cuál es el mes antes de julio?",junio
+months,"¿En qué mes es el Día de San Valentín?",febrero
+months,"¿Cuál es el mes después de agosto?",septiembre
+months,"¿Cuál es el sexto mes?",junio
+months,"¿En qué mes termina el año escolar?",junio
+months,"¿Cuál es el mes antes de diciembre?",noviembre
+months,"¿Cuál es el quinto mes?",mayo
+months,"¿En qué mes empieza el año escolar?",septiembre
+months,"¿Cuál es el mes después de marzo?",abril
+months,"¿En qué mes es el Día de Acción de Gracias?",noviembre
+months,"¿Cuál es el mes antes de mayo?",abril
+months,"¿Cuál es el octavo mes?",agosto
+time,"¿Qué hora es? [1:00]","la una"
+time,"¿Qué hora es? [2:00]","las dos"
+time,"¿Qué hora es? [3:00]","las tres"
+time,"¿Qué hora es? [4:00]","las cuatro"
+time,"¿Qué hora es? [5:00]","las cinco"
+time,"¿Qué hora es? [6:00]","las seis"
+time,"¿Qué hora es? [7:00]","las siete"
+time,"¿Qué hora es? [8:00]","las ocho"
+time,"¿Qué hora es? [9:00]","las nueve"
+time,"¿Qué hora es? [10:00]","las diez"
+time,"¿Qué hora es? [11:00]","las once"
+time,"¿Qué hora es? [12:00]","las doce"
+time,"¿Qué hora es? [1:30]","la una y media"
+time,"¿Qué hora es? [2:30]","las dos y media"
+time,"¿Qué hora es? [3:30]","las tres y media"
+time,"¿Qué hora es? [4:30]","las cuatro y media"
+time,"¿Qué hora es? [5:30]","las cinco y media"
+time,"¿Qué hora es? [6:15]","las seis y cuarto"
+time,"¿Qué hora es? [7:15]","las siete y cuarto"
+time,"¿Qué hora es? [8:45]","las nueve menos cuarto"`;
+
+        // Parse CSV
+        const lines = csvData.split('\n').slice(1);
+        const questions = lines.map(line => {
+            const parts = line.split(',');
+            const question = parts[1].replace(/"/g, '');
+            const answer = parts[2].replace(/"/g, '');
+            return { question, answer };
+        });
+
+        // Shuffle questions
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const shuffledQuestions = shuffle([...questions]);
+        let currentIndex = -1;
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('totalNum').textContent = shuffledQuestions.length;
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                displayQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayQuestion();
+            }
+        }
+
+        function displayQuestion() {
+            const q = shuffledQuestions[currentIndex];
+            document.getElementById('question').textContent = q.question;
+            document.getElementById('answer').textContent = q.answer;
+            document.getElementById('currentNum').textContent = currentIndex + 1;
+            
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+        }
+    </script>
+</body>
+</html>
